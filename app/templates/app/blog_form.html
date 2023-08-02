@@ -1,0 +1,14 @@
+{% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Blog{% endblock %}
+
+{% block content %}
+  <h2>Create a New Blog</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit">Create</button>
+  </form>
+  <a href="{% url 'logout'%}">Logout</a>
+{% endblock %}

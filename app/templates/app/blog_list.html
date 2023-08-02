@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+{% block title %}Blogs{% endblock %}
+{% block content %}
+<h1>Blog List</h1>
+<ul>
+    {% for blog in blogs %}
+    <li>
+        <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
+        {% if user.is_authenticated and blog.owner == user %}
+        <a href="{% url 'blog_update' blog.pk %}" style="color:rgb(41, 10, 245); margin-left:10px;"><strong>Update</strong></a>
+        <a href="{% url 'blog_delete' blog.pk %}" style="color: red; margin-left:10px;"><strong>Delete</strong></a>
+        {% endif %}
+    </li> 
+    {% endfor %} 
+</ul>
+<h2>Add a New Blog</h2>
+<form method="post" action="{% url 'blog_create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add Blog">
+</form>
+<a href="{% url 'logout'%}">Logout</a>
+{% endblock %}

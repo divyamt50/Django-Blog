@@ -1,0 +1,9 @@
+{% extends 'app/base.html' %}
+{% block title %}{{ blog.title }}{% endblock %}
+{% block content %}
+<h1>{{ blog.title }}</h1>
+<p>{{ blog.content}} </p>
+<p style="color: green;">Written by: {{ blog.owner.username }}</p>
+<p><strong>Created at:</strong> {{ blog.created_at }}</p>
+<a href="{% url 'blog_list' %}">Home</a>
+{% endblock %}

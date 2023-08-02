@@ -1,0 +1,8 @@
+{% extends 'app/base.html' %}
+{% block title %}Blog{% endblock %}
+{% block content %}
+    <h1>Welcome to our blog</h1>
+
+    <a href="{% url 'signup' %}">SignUp</a>
+    <a href="{% url 'login' %}">Login</a>
+{% endblock %}

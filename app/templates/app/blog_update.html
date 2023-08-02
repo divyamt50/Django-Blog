@@ -1,0 +1,13 @@
+{% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Update Blog{% endblock %}
+
+{% block content %}
+    <h2>Update Blog</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit">Update</button>
+    </form>
+    <a href="{% url 'blog_list' %}">Cancel</a>
+{% endblock %}

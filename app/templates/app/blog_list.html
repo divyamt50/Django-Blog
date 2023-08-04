@@ -1,23 +1,124 @@
 {% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Blogs{% endblock %}
 {% block content %}
-<h1>Blog List</h1>
-<ul>
-    {% for blog in blogs %}
-    <li>
-        <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
-        {% if user.is_authenticated and blog.owner == user %}
-        <a href="{% url 'blog_update' blog.pk %}" style="color:rgb(41, 10, 245); margin-left:10px;"><strong>Update</strong></a>
-        <a href="{% url 'blog_delete' blog.pk %}" style="color: red; margin-left:10px;"><strong>Delete</strong></a>
-        {% endif %}
-    </li> 
-    {% endfor %} 
-</ul>
-<h2>Add a New Blog</h2>
-<form method="post" action="{% url 'blog_create' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Add Blog">
-</form>
-<a href="{% url 'logout'%}">Logout</a>
+    <style>
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a.blog-link {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a.blog-link:hover {
+            text-decoration: underline;
+        }
+
+        a.update-link {
+            color: rgb(41, 10, 245);
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        a.delete-link {
+            color: red;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        h2 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        a.logout-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a.logout-link:hover {
+            text-decoration: underline;
+        }
+
+         /* Additional styles for the search bar */
+        .search-bar-container {
+            text-align: right;
+            margin-right: 60px;
+        }
+
+        .search-bar-container input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .search-bar-container button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .search-bar-container button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <h1>Blog List</h1>
+    <div class="search-bar-container">
+    <form method="GET" action="{% url 'blog_list' %}">
+        <input type="text" name="q" placeholder="Search blogs....">
+        <button type="submit">Search</button>
+    </form>
+    </div>
+    <ul>
+        {% for blog in blogs %}
+        <li>
+            <a href="{% url 'blog_detail' blog.pk %}" class="blog-link">{{ blog.title }}</a>
+            {% if user.is_authenticated and blog.owner == user %}
+            <a href="{% url 'blog_update' blog.pk %}" class="update-link"><strong>Update</strong></a>
+            <a href="{% url 'blog_delete' blog.pk %}" class="delete-link"><strong>Delete</strong></a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <h2>Add a New Blog</h2>
+    <form method="post" action="{% url 'blog_create' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add Blog">
+    </form>
+    <a href="{% url 'logout'%}" class="logout-link">Logout</a>
 {% endblock %}

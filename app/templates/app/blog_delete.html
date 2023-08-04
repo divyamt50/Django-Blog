@@ -2,11 +2,48 @@
 {% block title %}Delete Blog{% endblock %}
 
 {% block content%}
+    <style>
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        button[type="submit"] {
+            background-color: red;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: darkred;
+        }
+
+        a.cancel-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a.cancel-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
     <h2>Delete Blog</h2>
     <p>Are you sure you want to delete "{{ blog.title }}"?</p>
     <form method="post">
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <a href="{% url 'blog_list' %}">Cancel</a>
-{% endblock %} 
+    <a href="{% url 'blog_list' %}" class="cancel-link">Cancel</a>
+{% endblock %}

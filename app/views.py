@@ -57,6 +57,13 @@ class BlogListView(LoginRequiredMixin, ListView):
     context_object_name = 'blogs'
     login_url = '/login/'
     
+    def get_queryset(self):
+        search_query = self.request.GET.get('q')
+        if search_query:
+            return Blog.objects.filter(title__icontains=search_query)
+        else:
+            return Blog.objects.all()
+    
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     template_name = 'app/blog_form.html'
@@ -74,6 +81,13 @@ class BlogDetailView(LoginRequiredMixin,DetailView):
     context_object_name = 'blog'
     pk_url_kwarg = 'pk'
     login_url = '/login/'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog = context['blog']
+        context['comments'] = Comment.objects.filter(blog = blog)
+        context['comment_form'] = CommentForm()
+        return context 
     
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
@@ -97,3 +111,55 @@ class BlogDeleteView(LoginRequiredMixin,DeleteView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(owner = self.request.user)
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    template_name = 'app/comment_form.html'
+    form_class = CommentForm
+    login_url = '/login/'
+    
+    def form_valid(self, form):
+        blog = get_object_or_404(Blog, pk = self.kwargs['pk'])
+        form.instance.blog = blog
+        form.instance.user = self.request.user 
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('blog_detail', kwargs = {'pk':self.kwargs['pk']})
+
+
+from django.shortcuts import redirect
+from django.views.generic.edit import UpdateView
+from .forms import CommentForm
+
+class CommentEditView(LoginRequiredMixin, UpdateView):
+    model = Comment
+    template_name = 'app/comment_form.html'
+    form_class = CommentForm
+    login_url = '/login/'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(pk=self.kwargs['pk'], user=self.request.user)
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.user = self.request.user
+        comment.save()
+        return redirect('blog_detail', pk=comment.blog.pk)
+
+
+
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'app/comment_delete.html'
+    login_url = '/login/'
+     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(pk = self.kwargs['pk'], user = self.request.user)
+    
+    def get_success_url(self):
+        blog = self.object.blog
+        return reverse_lazy('blog_detail', kwargs = {'pk': blog.pk})

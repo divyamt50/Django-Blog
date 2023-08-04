@@ -1,0 +1,52 @@
+{% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{% if comment %}Edit Comment{% else %}Add Comment{% endif %}{% endblock %}
+{% block content %}
+
+<!--css styling-->
+<style>
+    /* CSS styling for the textarea */
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    /* Optional: Style the form container */
+    .comment-form-container {
+        margin-bottom: 20px;
+    }
+</style>
+
+<!--css styling ends-->
+
+
+<h1>{% if comment %}Edit Comment{% else %}Add Comment{% endif %}</h1>
+{% if comment %}
+<form method="post" enctype="multipart/form-data" action="{% url 'edit_comment' pk=comment.pk %}">
+    {% csrf_token %}
+    <div class = "comment-form-container">
+        <label for="{{ comment_form.content.id_for_label }}">Edit Comment:</label>
+        <textarea id="{{ comment_form.content.id_for_label }}" name="content" rows="4" cols="50">{{ comment.content }}</textarea>
+    </div>
+    <button type="submit">Save Changes</button>
+</form>
+
+{% else %}
+<form method="post" enctype="multipart/form-data" action="{% url 'add_comment' pk=blog.pk %}">
+    {% csrf_token %}
+    <div class = "comment-form-container">
+        <label for="{{ comment_form.content.id_for_label }}">Add Comment:</label>
+        <textarea id="{{ comment_form.content.id_for_label }}" name="{{ comment_form.content.name }}" rows="4" cols="50">{{ comment_form.content.value }}</textarea>
+    </div>
+    <button type="submit">Add Comment</button>
+</form>
+{% endif %}
+{% if comment %}
+<a href="{% url 'blog_detail' pk=comment.blog.pk %}">Cancel</a>
+{% else %}
+<a href="{% url 'blog_detail' pk=blog.pk %}">Cancel</a>
+{% endif %}
+{% endblock %}

@@ -1,9 +1,141 @@
 {% extends 'app/base.html' %}
 {% block title %}{{ blog.title }}{% endblock %}
+
 {% block content %}
+{% load crispy_forms_tags %}
+<style>
+    /* Internal CSS styles */
+    h1 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    img {
+        float: left;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+
+    p {
+        color: #555;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .comment-section {
+        margin-top: 30px;
+    }
+
+    .comment-section p.comment-content {
+        font-size: 18px; /* Increased font size for comments */
+        font-weight: bold; /* Make the comments bolder */
+        margin-bottom: 5px; /* Reduce margin between comments and username/time */
+    }
+
+    .comment-section p.comment-info {
+        font-size: 16px; /* Font size for username and time */
+        color: #444; /* Darker color for username and time */
+        margin-bottom: 10px;
+    }
+
+    .comment-section a {
+        color: #007bff;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+
+    .comment-section form {
+        display: inline-block;
+    }
+
+    .comment-section button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .comment-section button:hover {
+        background-color: #0056b3;
+    }
+
+    .add-comment-section {
+        margin-top: 30px;
+    }
+
+    .add-comment-section button {
+        background-color: #28a745;
+    }
+
+    .add-comment-section button:hover {
+        background-color: #1e7e34;
+    }
+
+    .home-link {
+        display: block;
+        margin-top: 30px;
+    }
+
+    .home-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .home-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* Space between comments */
+    .comment-section .comment {
+        margin-bottom: 20px;
+    }
+</style>
+
 <h1>{{ blog.title }}</h1>
-<p>{{ blog.content}} </p>
+{% if blog.image %}
+    <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+{% endif %}
+<br>
+<p>{{ blog.content }}</p>
 <p style="color: green;">Written by: {{ blog.owner.username }}</p>
 <p><strong>Created at:</strong> {{ blog.created_at }}</p>
-<a href="{% url 'blog_list' %}">Home</a>
+<p><strong>Last Updated at:</strong> {{ blog.last_updated }}</p>
+
+<div class="comment-section">
+    <h2>Comments</h2>
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="comment-content">{{ comment.content }}</p>
+            <p class="comment-info">
+                <strong>{{ comment.user.username }}</strong> - {{ comment.created_at }}
+            </p>
+            {% if comment.user == request.user %}
+                <a href="{% url 'edit_comment' pk=comment.pk %}">Edit</a>
+                <form method="post" action="{% url 'delete_comment' pk=comment.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No comments yet</p>
+    {% endfor %}
+</div>
+
+<div class="add-comment-section">
+    <h2>Add a comment</h2>
+    <form method="post" enctype="multipart/form-data" action="{% url 'add_comment' pk=blog.pk %}">
+        {% csrf_token %}
+        {{ comment_form|crispy }}
+        <button type="submit">Add Comment</button>
+    </form>
+</div>
+
+<div class="home-link">
+    <a href="{% url 'blog_list' %}">Home</a>
+</div>
+
 {% endblock %}

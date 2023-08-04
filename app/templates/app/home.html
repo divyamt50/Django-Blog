@@ -1,11 +1,52 @@
 {% extends 'app/base.html' %}
 {% load socialaccount %}
+{% load static %}
 {% block title %}Blog{% endblock %}
 {% block content %}
-    <h1>Welcome to our blog</h1>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
 
-    <a href="{% url 'signup' %}">SignUp</a>
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .github-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .github-link img {
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    </style>
+
+    <h1>Welcome to Blog</h1>
+
+    <a href="{% url 'signup' %}">Sign Up</a>
     <a href="{% url 'login' %}">Login</a>
-    <br>
-    <a href="{% provider_login_url 'github' %}">Login with GitHub</a>
+    <br><br>
+
+    <a href="{% provider_login_url 'github' %}" class="github-link">
+        Login with GitHub
+    </a>
 {% endblock %}

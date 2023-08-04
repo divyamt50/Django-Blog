@@ -1,8 +1,56 @@
 {% extends 'app/base.html' %}
+{% load socialaccount %}
 {% block title %}Blog{% endblock %}
 {% block content %}
+    <style>
+        /* Internal CSS styles */
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .github-logo {
+            display: inline-block;
+            width: 20px; /* Adjust the size of the GitHub logo */
+            height: 20px; /* Adjust the size of the GitHub logo */
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .github-link {
+            background-color: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .github-link:hover {
+            background-color: #444;
+        }
+    </style>
+
     <h1>Welcome to our blog</h1>
 
     <a href="{% url 'signup' %}">SignUp</a>
     <a href="{% url 'login' %}">Login</a>
+    <br>
+    <a href="{% provider_login_url 'github' %}" class="github-link">
+        <img src="{% static 'path/to/github-logo.png' %}" alt="GitHub Logo" class="github-logo">
+        Login with GitHub
+    </a>
 {% endblock %}
